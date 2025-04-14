@@ -1,0 +1,23 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from config.database import connect_db
+
+app = FastAPI()
+
+# CORS setup to allow frontend communication
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/")
+async def root():
+    return {"message": "Welcome to ArtisanHub API"}
+
+@app.get("/test-db")
+async def test_db():
+    db = connect_db()
+    return {"status": "MongoDB connected", "db_name": db.name}

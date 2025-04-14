@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from config.database import connect_db
+from config.database import connect_db, init_db
 
 app = FastAPI()
 
-# CORS setup to allow frontend communication
+# Initialize database tables
+init_db()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -19,5 +21,11 @@ async def root():
 
 @app.get("/test-db")
 async def test_db():
-    db = connect_db()
-    return {"status": "MongoDB connected", "db_name": db.name}
+    try:
+        with connect_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+            tables = [row[0] for row in cursor.fetchall()]
+            return {"status": "SQLite connected", "tables": tables}
+    except Exception as e:
+        return {"error": str(e)}

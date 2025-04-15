@@ -1,0 +1,23 @@
+.category-card {
+  transition: transform 0.3s ease;
+}
+
+.category-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.category-card img {
+  object-fit: cover;
+  height: 150px;
+  width: 100%;
+}
+
+.category-card .card-body {
+  background-color: #f8f9fa;
+}
+
+.category-card .card-title {
+  color: #28a745;
+  font-size: 1.1rem;
+}

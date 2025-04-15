@@ -6,11 +6,14 @@ function Services() {
   const [artisans, setArtisans] = useState([]);
   const [services, setServices] = useState([]);
   const [filter, setFilter] = useState("");
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchArtisans = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/artisans");
+        const response = await axios.get("http://localhost:8000/api/artisans", {
+          params: { search: search || undefined },
+        });
         setServices(response.data.services);
         setArtisans(response.data.artisans);
       } catch (error) {
@@ -20,16 +23,34 @@ function Services() {
       }
     };
     fetchArtisans();
-  }, []);
+  }, [search]);
 
   const filteredArtisans = filter
     ? artisans.filter((artisan) => artisan.service === filter)
     : artisans;
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setSearch(e.target.search.value);
+  };
+
   return (
     <section className="py-5">
       <Container>
         <h2 className="text-center mb-4">Find Artisans</h2>
+        <Form onSubmit={handleSearch} className="mb-4">
+          <Form.Group className="d-flex">
+            <Form.Control
+              type="text"
+              name="search"
+              placeholder="Search by name, service, or location"
+              className="me-2"
+            />
+            <Button variant="success" type="submit">
+              Search
+            </Button>
+          </Form.Group>
+        </Form>
         <Form.Group className="mb-4" controlId="serviceFilter">
           <Form.Label>Filter by Service</Form.Label>
           <Form.Select
